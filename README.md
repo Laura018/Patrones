@@ -2,13 +2,13 @@
 
 ## Sections
 
-- [Patrones_Creacionales](#PATRONES-CREACIONALES)
+- [Patrones Creacionales](#PATRONES-CREACIONALES)
 
-    -*[1.AbstractFactrory](#1.-Abstract-Factory)*
+    -*[1. Abstract Factory](#1.-Abstract-Factory)*
 
-    -*[1.1Estuctura](#1.1-Estructura)*
+    -*[1.1 Estuctura](#1.1-Estructura)*
 
-    -*[1.2Código](#1.2-Código)*
+    -*[1.2 Código](#1.2-Código)*
 
 
 
@@ -26,50 +26,214 @@ ___
 
 ##  **1.1 Estructura**
 
-![Abstract Factory UML](AbstractFactory.jpg )
+![Abstract Factory UML](UMLPatterns/AbstractFactory.jpg )
 
 
 ## **1.2 Código**
 </div>
 
 
-~~~ python
+~~~python
 
-import random
-from Logic.Mariachi import Mariachi
+class Product():
+    def chassis(self):
+        pass
+
+    def camera(self):
+        pass
+
+    def propeller(self):
+        pass
+~~~
+___
+
+~~~python
+from Product import Product
+from ChassisDJI import ChassisDJI
+from PropellerDJI import PropellerDJI
+from CameraDJI import CameraDJI
 
 
-class Band:
+class DJI(Product):
 
-    listMariachi = []
-    listInstrument = []
-    listInstrumentTune=[]
-    listInstrumentPlay=[]
-    instrument = None
+    def chassis(self):
+        super().chassis()
+        c = ChassisDJI()
+        return c.createChassis()
 
-    def assignBand(self):
-        """Asigna objetos :Mariachi() en la lista"""
-        self.listInstrument.clear()
-        numRandom = random.randint(5, 10)
-        for i in range(0, numRandom):
-            self.listMariachi.append(Mariachi())
-            self.listInstrument.append(self.listMariachi[i].assignInstrument(
-                random.randint(0, 4)))
-        return self.listInstrument
+    def camera(self):
+        super().camera()
+        c = CameraDJI()
+        return c.createCamera()
 
-    def tuneBand(self):
-        """Recorre los objetos de la lista y los afina"""
-        self.listInstrumentTune.clear()
-        for i in range(0, len(self.listMariachi)):
-            self.listInstrumentTune.append(self.listMariachi[i].tuneInstrument())
-        return self.listInstrumentTune
-
-    def playBand(self):
-        """Hace que la banda toque"""
-        self.listInstrumentPlay.clear()
-        for i in range(0, len(self.listMariachi)):
-            self.listInstrumentPlay.append(self.listMariachi[i].playInstrument())
-        return self.listInstrumentPlay
+    def propeller(self):
+        super().propeller()
+        p = PropellerDJI()
+        return p.createPropeller()
 
 ~~~
 
+___
+
+~~~python
+
+from Product import Product
+from ChassisHubsand import ChassisHubsand
+from PropellerHubsand import PropellerHubsand
+from CameraHubsand import CameraHubsand
+
+
+class Hubsand (Product):
+    def chassis(self):
+        super().chassis()
+        h = ChassisHubsand()
+        return h.createChassis()
+
+    def camera(self):
+        super().camera()
+        h = CameraHubsand()
+        return h.createCamera()
+
+    def propeller(self):
+        super().propeller()
+        h = PropellerHubsand()
+        return h.createPropeller()
+
+~~~
+
+___
+
+~~~python
+class Camera():
+
+    def createCamera(self):
+        pass
+~~~
+___
+
+~~~python
+from Camera import Camera
+
+
+class CameraDJI(Camera):
+    def createCamera(self):
+        super().createCamera()
+        return "Camara de DJI"
+
+~~~
+___
+
+~~~python
+from Camera import Camera
+
+
+class CameraHubsand(Camera):
+
+    def createCamera(self):
+        super().createCamera()
+        return "Cámara de Hubsand"
+
+
+~~~
+___
+
+~~~python
+class Chassis():
+    def createChassis(self):
+        pass
+
+~~~
+___
+
+~~~python
+from Chassis import Chassis
+
+
+class ChassisDJI(Chassis):
+    def createChassis(self):
+        super().createChassis()
+        return "Chasis de DJI"
+
+~~~
+___
+
+~~~python
+from Chassis import Chassis
+
+
+class ChassisHubsand(Chassis):
+    def createChassis(self):
+        super().createChassis()
+        return "chasis de hubsand"
+
+~~~
+___
+
+~~~python
+class Propeller():
+    def createPropeller(self):
+        pass
+
+~~~
+___
+
+~~~python
+from Propeller import Propeller
+
+
+class PropellerDJI(Propeller):
+    def createPropeller(self):
+        super().createPropeller()
+        return "Helices de DJI"
+
+~~~
+___
+
+~~~python
+from Propeller import Propeller
+
+
+class PropellerHubsand(Propeller):
+    def createPropeller(self):
+        super().createPropeller()
+        return "Helices de Hubsand"
+
+~~~
+___
+
+~~~python
+from DJI import *
+from Hubsand import *
+
+
+class Client():
+
+    def __init__(self):
+        self.droneList = [DJI(), Hubsand()]
+
+    def chooseDrone(self):
+        drone = int(
+            input("¿Qué marca de drone desea?\nMarque 1 para DJI\nMarque 2 para Hubsand\n"))
+        if drone == 1:
+            brandDrone = self.droneList[0]
+        elif drone == 2:
+            brandDrone = self.droneList[1]
+
+        camera = brandDrone.camera()
+        chassis = brandDrone.chassis()
+        propeller = brandDrone.propeller()
+
+        return f"se ha creado {camera}, {chassis}, {propeller}"
+
+
+~~~
+___
+
+~~~python
+from Client import Client
+
+c = Client()
+print(c.chooseDrone())
+
+
+~~~
